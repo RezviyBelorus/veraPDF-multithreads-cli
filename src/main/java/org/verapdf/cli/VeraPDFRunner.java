@@ -1,6 +1,5 @@
 package org.verapdf.cli;
 
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,11 +14,9 @@ public class VeraPDFRunner implements Runnable {
 	private final String[] filesPaths;
 	private final String veraPDFStarterPath;
 
-	private volatile String pathToFile;
 	private final String EXIT = "q";
-	private volatile boolean isFree = false;
-	private volatile boolean isDone = false;
-	private volatile boolean stop = false;
+	private boolean stop = false;
+	private boolean isFirstFile = true;
 
 	public VeraPDFRunner(String veraPDFStarterPath, String... filesPaths) {
 		this.filesPaths = filesPaths;
@@ -41,51 +38,70 @@ public class VeraPDFRunner implements Runnable {
 			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
 			File loggerFile = loggerPath.toFile();
 
-			LOGGER.info("Starting veraPDF process for file " + filesPaths);
+			LOGGER.info("Starting veraPDF process for file " + filesPaths[0]);
 			Process process = Runtime.getRuntime().exec(command);
 
 			LOGGER.info("VeraPDF process has been started");
-			String tempFilePath;
 
 			try (OutputStream out = process.getOutputStream();
 				 InputStream in = process.getInputStream();
 				 InputStream errorStream = process.getErrorStream();
 				 FileWriter outToLogger = new FileWriter(loggerFile.getAbsolutePath())) {
 				while (!this.stop) {
-					Thread.sleep(500);
-					if (pathToFile != null) {
-						out.write(pathToFile.getBytes());
-						out.write("\n".getBytes());
-						out.flush();
-						pathToFile = null;
+					if (isFirstFile) {
+						getDataAndAddResult(loggerFile, in, errorStream, outToLogger);
+						isFirstFile = false;
 					}
-					if (!this.isFree) {
-						while (in.available() == 0) {
-						}
-						Scanner scanner = new Scanner(in);
-						tempFilePath = scanner.nextLine();
+					File fileToVerify = VeraPDFProcessor.getAndRemoveFileToVerify();
+					if (fileToVerify != null) {
+						writeToConsole(out, fileToVerify);
 
-						scanner = new Scanner(errorStream);
-						while (errorStream.available() != 0) {
-							outToLogger.write(scanner.nextLine());
-							outToLogger.flush();
-						}
-						LOGGER.info(tempFilePath);
-						ResultStructure resultStructure = new ResultStructure(new File(tempFilePath), loggerFile);
-						VeraPDFProcessor.result.add(resultStructure);
-						this.isFree = true;
+						getDataAndAddResult(loggerFile, in, errorStream, outToLogger);
+					}
+					if (!VeraPDFProcessor.haveFilesToProcess()) {
+						this.stop = true;
 					}
 				}
 				out.write(EXIT.getBytes());
 				out.flush();
-			} finally {
 			}
 			process.waitFor();
-			this.isDone = true;
 			LOGGER.info("VeraPDF process has been finished");
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Exception in additional thread", e);
 		}
+	}
+
+	private void getDataAndAddResult(File loggerFile, InputStream in, InputStream errorStream, FileWriter outToLogger) throws IOException {
+		String tempFilePath;
+		tempFilePath = getData(in, errorStream, outToLogger);
+		addResult(loggerFile, tempFilePath);
+	}
+
+	private void writeToConsole(OutputStream out, File fileToVerify) throws IOException {
+		out.write(fileToVerify.getAbsolutePath().getBytes());
+		out.write("\n".getBytes());
+		out.flush();
+	}
+
+	private void addResult(File loggerFile, String tempFilePath) {
+		ResultStructure resultStructure = new ResultStructure(new File(tempFilePath), loggerFile);
+		VeraPDFProcessor.addResult(resultStructure);
+	}
+
+	private String getData(InputStream in, InputStream errorStream, FileWriter outToLogger) throws IOException {
+		String tempFilePath;
+		while (in.available() == 0) {
+		}
+		Scanner scanner = new Scanner(in);
+		tempFilePath = scanner.nextLine();
+
+		scanner = new Scanner(errorStream);
+		while (errorStream.available() != 0) {
+			outToLogger.write(scanner.nextLine());
+			outToLogger.flush();
+		}
+		return tempFilePath;
 	}
 
 	public static class ResultStructure {
@@ -104,34 +120,5 @@ public class VeraPDFRunner implements Runnable {
 		public File getLogFile() {
 			return logFile;
 		}
-	}
-
-	public String getPathToFile() {
-		return pathToFile;
-	}
-
-	public boolean isStop() {
-		return stop;
-	}
-
-	public boolean isFree() {
-		return isFree;
-	}
-
-	public void setIsFree(boolean isFree) {
-		this.isFree = isFree;
-	}
-
-	public void setPathToFile(String pathToFile) {
-		this.pathToFile = pathToFile;
-	}
-
-
-	public void setStop(boolean stop) {
-		this.stop = stop;
-	}
-
-	public boolean isDone() {
-		return isDone;
 	}
 }
