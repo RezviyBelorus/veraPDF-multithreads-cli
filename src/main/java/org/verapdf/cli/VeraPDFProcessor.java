@@ -16,13 +16,16 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public class VeraPDFProcessor {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFProcessor.class.getCanonicalName());
+	public static final List<VeraPDFRunner.ResultStructure> result = Collections.synchronizedList(new ArrayList<VeraPDFRunner.ResultStructure>());
+	public static final List<String> filesToProcess = Collections.synchronizedList(new ArrayList<String>());
 
-	private final int THREADS_QUANTITY = 8;
+	private final int THREADS_QUANTITY = 1;
 
 	private final boolean isRecursive = true;
 
 	private String veraPDFStarterPath;
 	private File veraPDFErrorLog;
+	private boolean isAllThreadsDone = false;
 	private long startTime;
 
 	private List<File> toProcess;
@@ -40,8 +43,16 @@ public class VeraPDFProcessor {
 	}
 
 	private void process() {
-		List<Future<VeraPDFRunner.ResultStructure>> reports = getReportsFromFiles();
-		mergeReportsToFile(reports);
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				getReportsFromFiles();
+//			}
+//		}).start();
+//
+//		mergeReportsToFile();
+		getReportsFromFiles();
+		mergeReportsToFile();
 	}
 
 	private List<File> getFiles(String[] args) {
@@ -62,13 +73,47 @@ public class VeraPDFProcessor {
 		return new File(path);
 	}
 
-	private List<Future<VeraPDFRunner.ResultStructure>> getReportsFromFiles() {
-		List<Future<VeraPDFRunner.ResultStructure>> resultList = new ArrayList<>();
+	private void getReportsFromFiles() {
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS_QUANTITY);
+		List<VeraPDFRunner> runners = new ArrayList<>();
 
+		int threadIndex = 0;
 		for (File file : toProcess) {
-			Future<VeraPDFRunner.ResultStructure> result = executor.submit(new VeraPDFRunner(veraPDFStarterPath, file.getAbsolutePath()));
-			resultList.add(result);
+			if (threadIndex < THREADS_QUANTITY) {
+				runners.add(new VeraPDFRunner(veraPDFStarterPath, file.getAbsolutePath()));
+//				new Thread(runners.get(threadIndex)).start();
+				executor.submit(runners.get(threadIndex));
+				threadIndex++;
+			}
+		}
+		for (int i = threadIndex; i < toProcess.size(); ) {
+			System.out.println("i = " + i);
+			for (int j = 0; j < runners.size(); j++) {
+				VeraPDFRunner veraPDFRunner = runners.get(j);
+				System.out.println("trying to pass new files");
+				System.out.println(veraPDFRunner.isFree());
+				if (veraPDFRunner.isFree()) {
+					veraPDFRunner.setIsFree(false);
+					veraPDFRunner.setPathToFile(toProcess.get(i).getAbsolutePath());
+					System.out.println("new file passed");
+					i++;
+					break;
+				}
+			}
+		}
+		while (threadIndex > 0) {
+			VeraPDFRunner veraPDFRunner = runners.get(threadIndex-1);
+			if (veraPDFRunner.isFree()) {
+				System.out.println("veraPDFRunner.isFree()");
+				veraPDFRunner.setStop(true);
+				threadIndex--;
+			}
+		}
+		if (threadIndex < 0) {
+			isAllThreadsDone = true;
+			System.out.println("threadIndex: " + threadIndex);
+		}
+		while (executor.getActiveCount() > 0) {
 		}
 		executor.shutdown();
 		try {
@@ -78,47 +123,72 @@ public class VeraPDFProcessor {
 		} catch (InterruptedException e) {
 			LOGGER.log(Level.SEVERE, "Process has been interrupted", e);
 		}
-
-		return resultList;
 	}
 
-	private void mergeReportsToFile(List<Future<VeraPDFRunner.ResultStructure>> reports) {
+	private void mergeReportsToFile() {
 		List<File> tempFiles = new ArrayList<>();
 		List<VeraPDFRunner.ResultStructure> multiThreadsTempFiles = new ArrayList<>();
 
+//		while (isAllThreadsDone==true || result.size()>0)
+//			if (result.size() > 1) {
+				VeraPDFRunner.ResultStructure resultStructure1 = result.get(0);
+//				VeraPDFRunner.ResultStructure resultStructure2 = result.get(1);
+				result.remove(0);
+//				result.remove(0);
+				File logFile = resultStructure1.getLogFile();
+				mergeLoggs(logFile);
+//				logFile = resultStructure2.getLogFile();
+				mergeLoggs(logFile);
+
+
+				File reportFile1 = resultStructure1.getReportFile();
+//				File reportFile2 = resultStructure2.getReportFile();
+
+				multiThreadsTempFiles.add(resultStructure1);
+//				multiThreadsTempFiles.add(resultStructure2);
+
+				try {
+					FileOutputStream fileOutputStream = new FileOutputStream(new File("/Users/alexfomin/Desktop/newTest.xml"));
+					File testFile = new File("/Users/alexfomin/Desktop/xmlReport.xml");
+					mergeReports(reportFile1, testFile, fileOutputStream);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+//			}
+
 		try {
-			int currentIndex = 0;
-			File currentReport = null;
-			int reportsSize = reports.size();
-			for (Future<VeraPDFRunner.ResultStructure> result : reports) {
-				VeraPDFRunner.ResultStructure tempResult = result.get();
-				multiThreadsTempFiles.add(tempResult);
-				mergeLoggs(tempResult.getLogFile());
-
-				File reportFile = tempResult.getReportFile();
-
-				if (reportsSize == 1) {
-					printReport(reportFile);
-					break;
-				}
-				if (currentIndex == 0) {
-					currentReport = reportFile;
-				} else if (currentIndex < reportsSize - 1) {
-					File tempFile = Files.createTempFile("tempReport", "xml").toFile();
-					tempFiles.add(tempFile);
-					try (OutputStream os = new FileOutputStream(tempFile)) {
-						mergeReports(currentReport, reportFile, os);
-					}
-					currentReport = tempFile;
-				} else {
-					mergeReports(currentReport, reportFile, System.out);
-				}
-				++currentIndex;
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't write to log file", e);
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Can't get result from temp files", e);
+//			int currentIndex = 0;
+//			File currentReport = null;
+//			int reportsSize = reports.size();
+//			for (Future<VeraPDFRunner.ResultStructure> result : reports) {
+//				VeraPDFRunner.ResultStructure tempResult = result.get();
+//				multiThreadsTempFiles.add(tempResult);
+//				mergeLoggs(tempResult.getLogFile());
+//
+//				File reportFile = tempResult.getReportFile();
+//
+//				if (reportsSize == 1) {
+//					printReport(reportFile);
+//					break;
+//				}
+//				if (currentIndex == 0) {
+//					currentReport = reportFile;
+//				} else if (currentIndex < reportsSize - 1) {
+//					File tempFile = Files.createTempFile("tempReport", "xml").toFile();
+//					tempFiles.add(tempFile);
+//					try (OutputStream os = new FileOutputStream(tempFile)) {
+//						mergeReports(currentReport, reportFile, os);
+//					}
+//					currentReport = tempFile;
+//				} else {
+//					mergeReports(currentReport, reportFile, System.out);
+//				}
+//				++currentIndex;
+//			}
+//		} catch (IOException e) {
+//			LOGGER.log(Level.SEVERE, "Can't write to log file", e);
+//		} catch (Exception e) {
+//			LOGGER.log(Level.SEVERE, "Can't get result from temp files", e);
 		} finally {
 			deleteTemp(tempFiles, multiThreadsTempFiles);
 		}
