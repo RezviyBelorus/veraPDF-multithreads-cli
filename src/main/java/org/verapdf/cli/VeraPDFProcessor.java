@@ -8,7 +8,6 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +15,8 @@ import static java.nio.file.StandardOpenOption.APPEND;
 
 public class VeraPDFProcessor {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFProcessor.class.getCanonicalName());
-	public static final List<VeraPDFRunner.ResultStructure> RESULT = new LinkedList<>();
-	public static final List<File> FILES_TO_PROCESS = new LinkedList<>();
+	public final Queue<File> FILES_TO_PROCESS = new ArrayDeque<>();
+	public final Queue<VeraPDFRunner.ResultStructure> RESULT = new ArrayDeque<>();
 
 	private final int THREADS_QUANTITY = 2;
 
@@ -27,14 +26,18 @@ public class VeraPDFProcessor {
 	private String veraPDFStarterPath;
 	private File veraPDFErrorLog;
 	private long startTime;
+	private File current;
+
+	private List<File> tempFiles = new ArrayList<>();
+	private List<VeraPDFRunner.ResultStructure> multiThreadsTempFiles = new ArrayList<>();
 
 	private VeraPDFProcessor(String[] args) {
 		this.startTime = System.currentTimeMillis();
 		this.veraPDFStarterPath = checkVeraPDFPath(args[0]);
 		this.veraPDFErrorLog = getVeraPDFErrorLogFile(args[1]);
 		List<File> toProcess = getFiles(args);
-		FILES_TO_PROCESS.addAll(toProcess);
-		filesQuantity = toProcess.size();
+		this.FILES_TO_PROCESS.addAll(toProcess);
+		this.filesQuantity = toProcess.size();
 	}
 
 	public static void process(String[] args) {
@@ -43,15 +46,7 @@ public class VeraPDFProcessor {
 	}
 
 	private void process() {
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				getReportsFromFiles();
-//			}
-//		}).start();
-
 		getReportsFromFiles();
-		mergeReportsToFile();
 	}
 
 	private List<File> getFiles(String[] args) {
@@ -59,7 +54,7 @@ public class VeraPDFProcessor {
 		for (int i = 2; i < args.length; ++i) {
 			toFilter.add(new File(args[i]));
 		}
-		return ApplicationUtils.filterPdfFiles(toFilter, IS_RECURSIVE);
+		return ApplicationUtils.filterPdfFiles(toFilter, this.IS_RECURSIVE);
 	}
 
 	private String checkVeraPDFPath(String path) {
@@ -73,70 +68,44 @@ public class VeraPDFProcessor {
 	}
 
 	private void getReportsFromFiles() {
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS_QUANTITY);
-
-		for (int i = 0; i < THREADS_QUANTITY && getFilesToProcessSize() > 0; ++i) {
-			submitProcess(executor);
-		}
-		executor.shutdown();
 		try {
-			while (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-				LOGGER.info("Processing...");
+			ProcessManager processManager = new ProcessManager(this.THREADS_QUANTITY, this.veraPDFStarterPath, this.FILES_TO_PROCESS);
+			processManager.startProcesses();
+			while (this.filesQuantity > 0) {
+				Queue<VeraPDFRunner.ResultStructure> data = processManager.getData();
+				this.RESULT.addAll(data);
+				if (this.RESULT.size() > 0) {
+					mergeReportsToFile();
+				}
 			}
-		} catch (InterruptedException e) {
-			LOGGER.log(Level.SEVERE, "Process has been interrupted", e);
+			printReport(this.current);
+		} finally {
+			deleteTemp(this.tempFiles, this.multiThreadsTempFiles);
 		}
-	}
-
-	private void submitProcess(ThreadPoolExecutor executor) {
-		File file = getAndRemoveFileToVerify();
-		VeraPDFRunner veraPDFRunner = new VeraPDFRunner(veraPDFStarterPath, file.getAbsolutePath());
-		executor.submit(veraPDFRunner);
 	}
 
 	private void mergeReportsToFile() {
 		List<File> tempFiles = new ArrayList<>();
 		List<VeraPDFRunner.ResultStructure> multiThreadsTempFiles = new ArrayList<>();
-		File current = null;
-		boolean isOnlyOneFileToVerify = filesQuantity == 1 ? true : false;
-		try {
-			while (filesQuantity > 0) {
-				if (isOnlyOneFileToVerify) {
-					while (getResultSize() < 1) {
-					}
-					VeraPDFRunner.ResultStructure result = getAndRemoveResult();
-					mergeLoggs(result.getLogFile());
-					current = result.getReportFile();
-					break;
-				}
-				if (getResultSize() >= 1) {
-					VeraPDFRunner.ResultStructure result = getAndRemoveResult();
+		VeraPDFRunner.ResultStructure result = this.RESULT.poll();
+		filesQuantity--;
 
-					mergeLoggs(result.getLogFile());
+		mergeLoggs(result.getLogFile());
+		this.multiThreadsTempFiles.add(result);
 
-					File reportFile = result.getReportFile();
-
-					multiThreadsTempFiles.add(result);
-
-					if (current == null) {
-						current = reportFile;
-						filesQuantity--;
-					} else {
-						File tempFile = Files.createTempFile("tempReport", ".xml").toFile();
-						tempFiles.add(tempFile);
-						try (FileOutputStream os = new FileOutputStream(tempFile)) {
-							mergeReports(current, reportFile, os);
-							current = tempFile;
-							filesQuantity--;
-						}
-					}
-				}
+		if (this.current == null) {
+			this.current = result.getReportFile();
+		} else {
+			File report = result.getReportFile();
+			try {
+				File destination = Files.createTempFile("tempReport", ".xml").toFile();
+				mergeReports(this.current, report, destination);
+				deleteTemp(tempFiles, multiThreadsTempFiles);
+				this.current = destination;
+				tempFiles.add(destination);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Can't merge reports", e);
 			}
-			printReport(current);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't create tempFile", e);
-		} finally {
-			deleteTemp(tempFiles, multiThreadsTempFiles);
 		}
 	}
 
@@ -164,9 +133,10 @@ public class VeraPDFProcessor {
 		}
 	}
 
-	private void mergeReports(File report1, File report2, OutputStream os) {
+	private void mergeReports(File report1, File report2, File destination) {
 		try (InputStream in = new FileInputStream(report1);
-			 InputStream resourceAsStream = VeraPDFProcessor.class.getClassLoader().getResourceAsStream("mergeReports.xsl")) {
+			 InputStream resourceAsStream = VeraPDFProcessor.class.getClassLoader().getResourceAsStream("mergeReports.xsl");
+			 FileOutputStream os = new FileOutputStream(destination)) {
 			Map<String, String> parameters = new HashMap<>();
 			parameters.put("filePath", report2.getAbsolutePath());
 			long finishTime = System.currentTimeMillis();
@@ -192,42 +162,5 @@ public class VeraPDFProcessor {
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Can't read report from file", e);
 		}
-	}
-
-	public synchronized static File getAndRemoveFileToVerify() {
-		File fileToProcess = null;
-		if (FILES_TO_PROCESS.size() > 0) {
-			fileToProcess = FILES_TO_PROCESS.get(0);
-			FILES_TO_PROCESS.remove(0);
-		}
-		return fileToProcess;
-	}
-
-	public synchronized static boolean haveFilesToProcess() {
-		boolean isHaveFilesToProcess;
-		if (FILES_TO_PROCESS.size() == 0) {
-			isHaveFilesToProcess = false;
-		} else {
-			isHaveFilesToProcess = true;
-		}
-		return isHaveFilesToProcess;
-	}
-
-	private synchronized int getResultSize() {
-		return RESULT.size();
-	}
-
-	private synchronized int getFilesToProcessSize() {
-		return FILES_TO_PROCESS.size();
-	}
-
-	private synchronized VeraPDFRunner.ResultStructure getAndRemoveResult() {
-		VeraPDFRunner.ResultStructure result = RESULT.get(0);
-		RESULT.remove(0);
-		return result;
-	}
-
-	public synchronized static void addResult(VeraPDFRunner.ResultStructure result) {
-		RESULT.add(result);
 	}
 }

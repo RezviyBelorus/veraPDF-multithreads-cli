@@ -1,4 +1,6 @@
-org/verapdf/cli/GreenfieldCliStarter.class
-org/verapdf/cli/VeraPDFRunner$ResultStructure.class
-org/verapdf/cli/VeraPDFRunner.class
+org/verapdf/cli/ProcessManager.class
+org/verapdf/cli/VeraPDFRunner_temp$ResultStructure.class
+org/verapdf/cli/Test.class
+org/verapdf/cli/VeraPDFRunner_temp.class
 org/verapdf/cli/VeraPDFProcessor.class
+org/verapdf/cli/GreenfieldCliStarter.class

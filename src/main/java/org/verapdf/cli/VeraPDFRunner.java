@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class VeraPDFRunner implements Runnable {
+public class VeraPDFRunner {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFRunner.class.getCanonicalName());
 
 	private static String[] BASE_ARGUMENTS = {"--extract", "--format", "mrr", "--servermode"};
@@ -15,93 +15,113 @@ public class VeraPDFRunner implements Runnable {
 	private final String veraPDFStarterPath;
 
 	private final String EXIT = "q";
-	private boolean stop = false;
-	private boolean isFirstFile = true;
+	private boolean isProcessFree;
+
+	private Process process;
+	private OutputStream out;
+	private InputStream in;
+	private InputStream errorStream;
+
 
 	public VeraPDFRunner(String veraPDFStarterPath, String... filesPaths) {
 		this.filesPaths = filesPaths;
 		this.veraPDFStarterPath = veraPDFStarterPath;
 	}
 
-	@Override
-	public void run() {
+	public void start() {
+		LOGGER.info("Preparing veraPDF process");
+		String[] command = new String[1 + BASE_ARGUMENTS.length + filesPaths.length];
+		command[0] = veraPDFStarterPath;
+		for (int i = 0; i < BASE_ARGUMENTS.length; ++i) {
+			command[1 + i] = BASE_ARGUMENTS[i];
+		}
+		for (int i = 0; i < filesPaths.length; ++i) {
+			command[1 + BASE_ARGUMENTS.length + i] = filesPaths[i];
+		}
+		LOGGER.info("Starting veraPDF process for file " + filesPaths[0]);
+
 		try {
-			LOGGER.info("Preparing veraPDF process");
-			String[] command = new String[1 + BASE_ARGUMENTS.length + filesPaths.length];
-			command[0] = veraPDFStarterPath;
-			for (int i = 0; i < BASE_ARGUMENTS.length; ++i) {
-				command[1 + i] = BASE_ARGUMENTS[i];
-			}
-			for (int i = 0; i < filesPaths.length; ++i) {
-				command[1 + BASE_ARGUMENTS.length + i] = filesPaths[i];
-			}
-			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
-			File loggerFile = loggerPath.toFile();
-
-			LOGGER.info("Starting veraPDF process for file " + filesPaths[0]);
-			Process process = Runtime.getRuntime().exec(command);
-
-			LOGGER.info("VeraPDF process has been started");
-
-			try (OutputStream out = process.getOutputStream();
-				 InputStream in = process.getInputStream();
-				 InputStream errorStream = process.getErrorStream();
-				 FileWriter outToLogger = new FileWriter(loggerFile.getAbsolutePath())) {
-				while (!this.stop) {
-					if (isFirstFile) {
-						getDataAndAddResult(loggerFile, in, errorStream, outToLogger);
-						isFirstFile = false;
-					}
-					File fileToVerify = VeraPDFProcessor.getAndRemoveFileToVerify();
-					if (fileToVerify != null) {
-						writeToConsole(out, fileToVerify);
-
-						getDataAndAddResult(loggerFile, in, errorStream, outToLogger);
-					}
-					if (!VeraPDFProcessor.haveFilesToProcess()) {
-						this.stop = true;
-					}
-				}
-				out.write(EXIT.getBytes());
-				out.flush();
-			}
-			process.waitFor();
-			LOGGER.info("VeraPDF process has been finished");
+			this.process = Runtime.getRuntime().exec(command);
+			this.out = process.getOutputStream();
+			this.in = process.getInputStream();
+			this.errorStream = process.getErrorStream();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Exception in additional thread", e);
+			LOGGER.log(Level.SEVERE, "Exception in process", e);
 		}
+		LOGGER.info("VeraPDF process has been started");
+
+		setIsProcessFree(false);
 	}
 
-	private void getDataAndAddResult(File loggerFile, InputStream in, InputStream errorStream, FileWriter outToLogger) throws IOException {
-		String tempFilePath;
-		tempFilePath = getData(in, errorStream, outToLogger);
-		addResult(loggerFile, tempFilePath);
-	}
-
-	private void writeToConsole(OutputStream out, File fileToVerify) throws IOException {
-		out.write(fileToVerify.getAbsolutePath().getBytes());
-		out.write("\n".getBytes());
-		out.flush();
-	}
-
-	private void addResult(File loggerFile, String tempFilePath) {
-		ResultStructure resultStructure = new ResultStructure(new File(tempFilePath), loggerFile);
-		VeraPDFProcessor.addResult(resultStructure);
-	}
-
-	private String getData(InputStream in, InputStream errorStream, FileWriter outToLogger) throws IOException {
-		String tempFilePath;
-		while (in.available() == 0) {
+	public boolean closeProcess() {
+		boolean isClosed = false;
+		try {
+			this.out.write(EXIT.getBytes());
+			this.out.write("\n".getBytes());
+			this.out.flush();
+			process.waitFor();
+			isClosed = true;
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "Can't close process", e);
+		} catch (InterruptedException e) {
+			LOGGER.log(Level.SEVERE, "Process interrupted exception", e);
 		}
-		Scanner scanner = new Scanner(in);
+		return isClosed;
+	}
+
+	public boolean isDataAvailable() {
+		boolean isDataAvailable = false;
+		try {
+			if (this.in.available() > 0) {
+				isDataAvailable = true;
+			}
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "Exception when getting new data", e);
+		}
+		return isDataAvailable;
+	}
+
+	public void validateFile(File file){
+		try {
+			this.out.write(file.getAbsolutePath().getBytes());
+			this.out.write("\n".getBytes());
+			this.out.flush();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "Can't pass new file pro validate", e);
+		}
+		setIsProcessFree(false);
+	}
+
+	public ResultStructure getData() {
+		String tempFilePath;
+
+		Scanner scanner = new Scanner(this.in);
 		tempFilePath = scanner.nextLine();
 
-		scanner = new Scanner(errorStream);
-		while (errorStream.available() != 0) {
-			outToLogger.write(scanner.nextLine());
-			outToLogger.flush();
+		File loggerFile = null;
+		try {
+			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
+			loggerFile = loggerPath.toFile();
+			try (FileWriter outToLogger = new FileWriter(loggerFile)) {
+				scanner = new Scanner(this.errorStream);
+				while (this.errorStream.available() != 0) {
+					outToLogger.write(scanner.nextLine());
+					outToLogger.flush();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return tempFilePath;
+		setIsProcessFree(true);
+		return new ResultStructure(new File(tempFilePath), loggerFile);
+	}
+
+	public boolean isProcessFree() {
+		return isProcessFree;
+	}
+
+	public void setIsProcessFree(boolean processFree) {
+		isProcessFree = processFree;
 	}
 
 	public static class ResultStructure {
