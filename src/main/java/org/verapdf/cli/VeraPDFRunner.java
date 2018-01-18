@@ -3,6 +3,7 @@ package org.verapdf.cli;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,12 +11,13 @@ import java.util.logging.Logger;
 public class VeraPDFRunner {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFRunner.class.getCanonicalName());
 
-	private static String[] BASE_ARGUMENTS = {"--extract", "--format", "mrr", "--servermode"};
+//	private String[] BASE_ARGUMENTS = {"--extract", "--format", "mrr", "--servermode"};
+
 	private final String[] filesPaths;
 	private final String veraPDFStarterPath;
+	private List<String> veraPDFParameters;
 
 	private final String EXIT = "q";
-	private boolean isProcessFree;
 
 	private Process process;
 	private OutputStream out;
@@ -23,20 +25,22 @@ public class VeraPDFRunner {
 	private InputStream errorStream;
 
 
-	public VeraPDFRunner(String veraPDFStarterPath, String... filesPaths) {
+	public VeraPDFRunner(String veraPDFStarterPath, List<String> veraPDFParameters, String... filesPaths) {
 		this.filesPaths = filesPaths;
 		this.veraPDFStarterPath = veraPDFStarterPath;
+		this.veraPDFParameters = veraPDFParameters;
 	}
 
 	public void start() {
 		LOGGER.info("Preparing veraPDF process");
-		String[] command = new String[1 + BASE_ARGUMENTS.length + filesPaths.length];
+		int listOfParametersSize = veraPDFParameters.size();
+		String[] command = new String[1 + listOfParametersSize + filesPaths.length];
 		command[0] = veraPDFStarterPath;
-		for (int i = 0; i < BASE_ARGUMENTS.length; ++i) {
-			command[1 + i] = BASE_ARGUMENTS[i];
+		for (int i = 0; i < listOfParametersSize; ++i) {
+			command[1 + i] = veraPDFParameters.get(i);
 		}
 		for (int i = 0; i < filesPaths.length; ++i) {
-			command[1 + BASE_ARGUMENTS.length + i] = filesPaths[i];
+			command[1 + listOfParametersSize + i] = filesPaths[i];
 		}
 		LOGGER.info("Starting veraPDF process for file " + filesPaths[0]);
 
@@ -49,8 +53,6 @@ public class VeraPDFRunner {
 			LOGGER.log(Level.SEVERE, "Exception in process", e);
 		}
 		LOGGER.info("VeraPDF process has been started");
-
-		setIsProcessFree(false);
 	}
 
 	public boolean closeProcess() {
@@ -89,7 +91,6 @@ public class VeraPDFRunner {
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Can't pass new file pro validate", e);
 		}
-		setIsProcessFree(false);
 	}
 
 	public ResultStructure getData() {
@@ -112,16 +113,7 @@ public class VeraPDFRunner {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		setIsProcessFree(true);
 		return new ResultStructure(new File(tempFilePath), loggerFile);
-	}
-
-	public boolean isProcessFree() {
-		return isProcessFree;
-	}
-
-	public void setIsProcessFree(boolean processFree) {
-		isProcessFree = processFree;
 	}
 
 	public static class ResultStructure {

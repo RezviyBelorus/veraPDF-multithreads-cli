@@ -10,25 +10,28 @@ public class ProcessManager {
 	private final Queue<File> FILES_TO_PROCESS;
 
 	private final List<VeraPDFRunner> processes = new ArrayList<>();
-	private final int THREADS_QUANTITY;
+	private final int NUMBER_OF_PROCESSES;
+	private final int MAIN_PROCESS = 1;
 
 	private String veraPDFStarterPath;
-	int numberOfProcesses;
+	private List<String> veraPDFParameters;
+	int numberOfCurrentProcesses;
 
-	public ProcessManager(int THREADS_QUANTITY, String veraPDFStarterPath, Queue<File> filesToProcess) {
-		this.THREADS_QUANTITY = THREADS_QUANTITY;
+	public ProcessManager(int numberOfProcesses, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
+		this.NUMBER_OF_PROCESSES = numberOfProcesses - this.MAIN_PROCESS;
 		this.veraPDFStarterPath = veraPDFStarterPath;
+		this.veraPDFParameters = veraPDFParameters;
 		this.FILES_TO_PROCESS = filesToProcess;
 	}
 
 	public void startProcesses() {
-		for (int i = 1; i < THREADS_QUANTITY && FILES_TO_PROCESS.size() > 0; i++) {
+		for (int i = 0; i < NUMBER_OF_PROCESSES && FILES_TO_PROCESS.size() > 0; i++) {
 			File file = FILES_TO_PROCESS.poll();
-			VeraPDFRunner veraPDFRunner = new VeraPDFRunner(veraPDFStarterPath, file.getAbsolutePath());
+			VeraPDFRunner veraPDFRunner = new VeraPDFRunner(veraPDFStarterPath, veraPDFParameters, file.getAbsolutePath());
 			veraPDFRunner.start();
 			processes.add(veraPDFRunner);
 		}
-		numberOfProcesses = processes.size();
+		numberOfCurrentProcesses = processes.size();
 	}
 
 	public Queue<VeraPDFRunner.ResultStructure> getData() {
@@ -43,10 +46,9 @@ public class ProcessManager {
 				} else {
 					process.closeProcess();
 				}
-				numberOfProcesses--;
+				numberOfCurrentProcesses--;
 			}
 		}
 		return data;
 	}
-
 }

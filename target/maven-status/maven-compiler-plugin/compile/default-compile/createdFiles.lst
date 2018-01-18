@@ -1,6 +1,12 @@
 org/verapdf/cli/ProcessManager.class
-org/verapdf/cli/VeraPDFRunner_temp$ResultStructure.class
-org/verapdf/cli/Test.class
-org/verapdf/cli/VeraPDFRunner_temp.class
-org/verapdf/cli/VeraPDFProcessor.class
+org/verapdf/cli/reportparser/ReportParser.class
+org/verapdf/cli/VeraPDFProcessor$HelpDisplayer.class
+org/verapdf/cli/utils/ApplicationUtils.class
+org/verapdf/cli/commands/VeraMultithreadsCliArgParser.class
 org/verapdf/cli/GreenfieldCliStarter.class
+org/verapdf/cli/VeraPDFRunner.class
+org/verapdf/cli/VeraPDFRunner$ResultStructure.class
+org/verapdf/cli/Test.class
+org/verapdf/cli/VeraPDFProcessor.class
+org/verapdf/cli/commands/CliArgParamsParser.class
+org/verapdf/cli/utils/ReportPrinter.class
