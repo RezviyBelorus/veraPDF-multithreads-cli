@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 public class VeraPDFRunner {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFRunner.class.getCanonicalName());
 
-//	private String[] BASE_ARGUMENTS = {"--extract", "--format", "mrr", "--servermode"};
-
 	private final String[] filesPaths;
 	private final String veraPDFStarterPath;
 	private List<String> veraPDFParameters;
@@ -32,7 +30,6 @@ public class VeraPDFRunner {
 	}
 
 	public void start() {
-		LOGGER.info("Preparing veraPDF process");
 		int listOfParametersSize = veraPDFParameters.size();
 		String[] command = new String[1 + listOfParametersSize + filesPaths.length];
 		command[0] = veraPDFStarterPath;
@@ -42,7 +39,6 @@ public class VeraPDFRunner {
 		for (int i = 0; i < filesPaths.length; ++i) {
 			command[1 + listOfParametersSize + i] = filesPaths[i];
 		}
-		LOGGER.info("Starting veraPDF process for file " + filesPaths[0]);
 
 		try {
 			this.process = Runtime.getRuntime().exec(command);
@@ -52,7 +48,6 @@ public class VeraPDFRunner {
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Exception in process", e);
 		}
-		LOGGER.info("VeraPDF process has been started");
 	}
 
 	public boolean closeProcess() {

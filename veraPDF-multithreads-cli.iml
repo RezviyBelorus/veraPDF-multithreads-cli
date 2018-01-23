@@ -11,12 +11,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.verapdf:core:1.11.1" level="project" />
     <orderEntry type="library" name="Maven: org.verapdf:pdf-model:1.11.2" level="project" />
     <orderEntry type="library" name="Maven: org.verapdf:verapdf-xmp-core:0.12.1" level="project" />
     <orderEntry type="library" name="Maven: org.mozilla:rhino:1.7.7.2" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.stax-utils:stax-utils:20070216" level="project" />
-    <orderEntry type="library" name="Maven: org.verapdf.apps:gui:1.11.1" level="project" />
+    <orderEntry type="library" name="Maven: org.verapdf.apps:gui:1.11.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.beust:jcommander:1.69" level="project" />
   </component>
 </module>

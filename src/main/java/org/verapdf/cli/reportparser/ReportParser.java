@@ -34,9 +34,10 @@ public class ReportParser extends DefaultHandler {
 		this.startTime = System.currentTimeMillis();
 	}
 
+
 	@Override
 	public void endDocument() {
-		if (current.size()>0) {
+		if (current.size() > 0) {
 			if (batchSummary.size() > 0) {
 				Set<String> keySet = current.keySet();
 				keySet.forEach(k -> {
@@ -71,7 +72,11 @@ public class ReportParser extends DefaultHandler {
 		}
 		if (isPrinting) {
 			try {
-				os.write(("<" + qName).getBytes());
+				if (element.equals(qName)) {
+					os.write(("\n  <" + qName).getBytes());
+				} else {
+					os.write(("<" + qName).getBytes());
+				}
 				for (int i = 0; i < attributes.getLength(); i++) {
 					os.write((" " + attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\"").getBytes());
 				}
@@ -85,8 +90,7 @@ public class ReportParser extends DefaultHandler {
 	public void printSummary() {
 		try {
 			String batchSummaryTag = "batchSummary";
-			os.write(("\n<" + batchSummaryTag).getBytes());
-
+			os.write(("\n  <" + batchSummaryTag).getBytes());
 
 			Map<String, Integer> batchSummaryAttributesAndValues = this.batchSummary.get(batchSummaryTag);
 			batchSummaryAttributesAndValues.forEach((attribute, value) -> {
@@ -123,7 +127,7 @@ public class ReportParser extends DefaultHandler {
 			String stringDuration = getStringDuration(finishTime - this.startTime);
 
 			os.write(("\t<duration start=\"" + this.startTime + "\" finish=\"" + finishTime + "\">" + stringDuration + "</duration>" + "\n").getBytes());
-			os.write(("</" + batchSummaryTag + ">").getBytes());
+			os.write(("  </" + batchSummaryTag + ">" + "\n").getBytes());
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Can't output the element", e);
 		}
