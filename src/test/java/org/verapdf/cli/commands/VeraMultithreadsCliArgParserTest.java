@@ -1,7 +1,6 @@
 package org.verapdf.cli.commands;
 
 import com.beust.jcommander.Parameter;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
@@ -14,7 +13,7 @@ import static org.junit.Assert.*;
 public class VeraMultithreadsCliArgParserTest {
 	//todo:
 	@Test
-	public void checkForNewBaseVeraPDFParameteres() throws IllegalAccessException, NoSuchFieldException {
+	public void checkForNewBaseVeraPDFParameteres() throws IllegalAccessException {
 		VeraCliArgParser baseVeraCliArgParser = new VeraCliArgParser();
 		Class clazz = baseVeraCliArgParser.getClass();
 		Field[] declaredFields = clazz.getDeclaredFields();
@@ -49,7 +48,13 @@ public class VeraMultithreadsCliArgParserTest {
 				}
 			}
 		}
+
 		List<String> baseVeraPDFParametersByMethod = VeraMultithreadsCliArgParser.getBaseVeraPDFParameters(cliArgParser);
-		assertEquals(baseVeraPDFParametersByMethod.size()-1, baseVeraPDFParametersByReflection.size()-2);
+		//without servermode
+		int parametersQuantityByMethod = baseVeraPDFParametersByMethod.size() - 1;
+		//without pdfPaths+[]
+		int parametersQuantityByReflection = baseVeraPDFParametersByReflection.size() - 2;
+
+		assertEquals(parametersQuantityByMethod, parametersQuantityByReflection);
 	}
 }

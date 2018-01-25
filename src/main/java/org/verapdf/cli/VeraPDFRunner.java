@@ -1,17 +1,20 @@
 package org.verapdf.cli;
 
+import org.verapdf.cli.utils.reports.ReportWriter;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class VeraPDFRunner {
+public class VeraPDFRunner implements Runnable{
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFRunner.class.getCanonicalName());
 
-	private final String[] filesPaths;
+	Queue<File> filesToProcess;
 	private final String veraPDFStarterPath;
 	private List<String> veraPDFParameters;
 
@@ -19,34 +22,51 @@ public class VeraPDFRunner {
 
 	private Process process;
 	private OutputStream out;
-	private InputStream in;
 	private InputStream errorStream;
 
+	private Scanner reportScanner;
+	private Scanner errorScanner;
+	private ReportWriter reportHandler;
 
-	public VeraPDFRunner(String veraPDFStarterPath, List<String> veraPDFParameters, String... filesPaths) {
-		this.filesPaths = filesPaths;
+	public VeraPDFRunner(ReportWriter reportHandler, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
+		this.filesToProcess = filesToProcess;
+		this.reportHandler = reportHandler;
 		this.veraPDFStarterPath = veraPDFStarterPath;
 		this.veraPDFParameters = veraPDFParameters;
 	}
 
-	public void start() {
+	@Override
+	public void run() {
 		int listOfParametersSize = veraPDFParameters.size();
-		String[] command = new String[1 + listOfParametersSize + filesPaths.length];
+		int filesQuantity = filesToProcess.size();
+		String[] command = new String[1 + listOfParametersSize + 1];
 		command[0] = veraPDFStarterPath;
 		for (int i = 0; i < listOfParametersSize; ++i) {
 			command[1 + i] = veraPDFParameters.get(i);
 		}
-		for (int i = 0; i < filesPaths.length; ++i) {
-			command[1 + listOfParametersSize + i] = filesPaths[i];
-		}
+		for (int i = 0; i < filesQuantity; ++i) {
 
+		}
+		command[1 + listOfParametersSize] = filesToProcess.poll().getAbsolutePath();
 		try {
 			this.process = Runtime.getRuntime().exec(command);
 			this.out = process.getOutputStream();
-			this.in = process.getInputStream();
+			reportScanner = new Scanner(process.getInputStream());
 			this.errorStream = process.getErrorStream();
+			errorScanner = new Scanner(process.getErrorStream());
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Exception in process", e);
+		}
+		while (reportScanner.hasNextLine()) {
+			reportHandler.write(getData());
+
+			File file = filesToProcess.poll();
+
+			if (file != null) {
+				validateFile(file);
+			} else {
+				closeProcess();
+			}
 		}
 	}
 
@@ -66,18 +86,6 @@ public class VeraPDFRunner {
 		return isClosed;
 	}
 
-	public boolean isDataAvailable() {
-		boolean isDataAvailable = false;
-		try {
-			if (this.in.available() > 0) {
-				isDataAvailable = true;
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Exception when getting new data", e);
-		}
-		return isDataAvailable;
-	}
-
 	public void validateFile(File file){
 		try {
 			this.out.write(file.getAbsolutePath().getBytes());
@@ -88,25 +96,22 @@ public class VeraPDFRunner {
 		}
 	}
 
-	public ResultStructure getData() {
-		String tempFilePath;
-
-		Scanner scanner = new Scanner(this.in);
-		tempFilePath = scanner.nextLine();
+	private ResultStructure getData() {
+		String tempFilePath = reportScanner.nextLine();
 
 		File loggerFile = null;
 		try {
 			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
 			loggerFile = loggerPath.toFile();
-			try (FileWriter outToLogger = new FileWriter(loggerFile)) {
-				scanner = new Scanner(this.errorStream);
+			try (BufferedWriter outToLogger = new BufferedWriter(new FileWriter(loggerFile))) {
 				while (this.errorStream.available() != 0) {
-					outToLogger.write(scanner.nextLine());
+					outToLogger.write(errorScanner.nextLine());
+					outToLogger.newLine();
 					outToLogger.flush();
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Can't create temporary log file", e);
 		}
 		return new ResultStructure(new File(tempFilePath), loggerFile);
 	}

@@ -2,60 +2,46 @@ package org.verapdf.cli;
 
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.commands.VeraMultithreadsCliArgParser;
-import org.verapdf.cli.utils.reports.ReportHandler;
+import org.verapdf.cli.utils.reports.ReportWriter;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.nio.file.StandardOpenOption.APPEND;
 
 public class VeraPDFProcessor {
 	private static final Logger LOGGER = Logger.getLogger(VeraPDFProcessor.class.getCanonicalName());
 
-	public final Queue<File> FILES_TO_PROCESS = new ArrayDeque<>();
-	public final Queue<VeraPDFRunner.ResultStructure> RESULT = new ArrayDeque<>();
+	private final Queue<File> filesToProcess = new ConcurrentLinkedQueue<>();
 
-	private int NUMBER_OF_PROCESSES;
-
-	private final String OUT_PUT_FORMAT;
-	private int filesQuantity;
+	private final String OUTPUT_FORMAT;
 
 	private String veraPDFStarterPath;
 	private List<String> veraPDFParameters;
 	private File veraPDFErrorLog;
 	private OutputStream os;
-	private VeraMultithreadsCliArgParser cliArgParser;
 
-	private List<VeraPDFRunner.ResultStructure> multiThreadsTempFiles = new ArrayList<>();
-
-	ReportHandler reportPrinter;
+	private ReportWriter reportWriter;
 
 	private VeraPDFProcessor(VeraMultithreadsCliArgParser cliArgParser) {
-		this.cliArgParser = cliArgParser;
-
-		this.OUT_PUT_FORMAT = cliArgParser.getFormat().getOption();
-		this.NUMBER_OF_PROCESSES = cliArgParser.getNumberOfProcesses();
+		this.OUTPUT_FORMAT = cliArgParser.getFormat().getOption();
 		this.veraPDFStarterPath = cliArgParser.getBaseVeraCLIPath();
 		this.veraPDFErrorLog = getVeraPDFErrorLogFile(cliArgParser.getLoggerPath());
-		this.os = getOutputStream(this.cliArgParser.getOutputFile());
+		this.os = getOutputStream(cliArgParser.getOutputFile());
 		this.veraPDFParameters = VeraMultithreadsCliArgParser.getBaseVeraPDFParameters(cliArgParser);
-		List<File> toProcess = getFiles();
-		this.FILES_TO_PROCESS.addAll(getFiles());
-		this.filesQuantity = toProcess.size();
-		this.reportPrinter = ReportHandler.newInstance(os, OUT_PUT_FORMAT);
+		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
+		this.reportWriter = ReportWriter.newInstance(os, OUTPUT_FORMAT, veraPDFErrorLog, filesToProcess.size());
 	}
 
-	private OutputStream getOutputStream(String arg) {
+	private OutputStream getOutputStream(String outputFilePath) {
 		OutputStream os = null;
 		try {
-			if (arg == null) {
+			if (outputFilePath == null) {
 				os = System.out;
 			} else {
-				os = new FileOutputStream(new File(arg));
+				os = new FileOutputStream(new File(outputFilePath));
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Can't create output stream for file", e);
@@ -65,92 +51,51 @@ public class VeraPDFProcessor {
 
 	public static void process(VeraMultithreadsCliArgParser cliArgParser) {
 		VeraPDFProcessor processor = new VeraPDFProcessor(cliArgParser);
-		processor.process();
+		processor.startProcesses(cliArgParser.getNumberOfProcesses());
 	}
 
-	private void process() {
-		getReportsFromFiles();
-	}
-
-	private List<File> getFiles() {
-		List<String> pdfPaths = cliArgParser.getPdfPaths();
+	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse) {
 		List<File> toFilter = new ArrayList<>(pdfPaths.size());
 		for (String path : pdfPaths) {
 			toFilter.add(new File(path));
 		}
-		return ApplicationUtils.filterPdfFiles(toFilter, cliArgParser.isRecurse());
+		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
 	}
 
 	private File getVeraPDFErrorLogFile(String path) {
-		File file;
+		//todo: get own directory to create logger
+		File file = null;
 		if (path == null) {
-			int indexOfSeparator = veraPDFStarterPath.lastIndexOf("/");
-			String pathToLogger = veraPDFStarterPath.substring(0, indexOfSeparator + 1) + "logger.txt";
-			file = new File(pathToLogger);
+			File veraPDFFile = new File(veraPDFStarterPath);
+			if (veraPDFFile.exists()) {
+				File parentFile = veraPDFFile.getParentFile();
+				file = new File(parentFile, "logger.txt");
+				if (!file.exists()) {
+					try {
+						Files.createFile(file.toPath());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} else {
-			file = new File(path);
+			try {
+				file = new File(path);
+				if (!file.exists()) {
+					Files.createFile(file.toPath());
+				}
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Can't create logger file", e);
+			}
 		}
 		return file;
 	}
 
-	private void getReportsFromFiles() {
-		try {
-			ProcessManager processManager = new ProcessManager(this.NUMBER_OF_PROCESSES, this.veraPDFStarterPath, this.veraPDFParameters, this.FILES_TO_PROCESS);
-			processManager.startProcesses();
-
-			reportPrinter.writeStartDocument();
-			while (this.filesQuantity > 0) {
-				Queue<VeraPDFRunner.ResultStructure> data = processManager.getData();
-				this.RESULT.addAll(data);
-				if (this.RESULT.size() > 0) {
-					printReport(this.RESULT.poll());
-					filesQuantity--;
-				}
-			}
-			reportPrinter.writeEndDocument();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
-		} finally {
-			deleteTemp(this.multiThreadsTempFiles);
-			closeOutputStream();
-		}
-	}
-
-	private void closeOutputStream() {
-		try {
-			os.flush();
-			os.close();
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't close output stream", e);
-		}
-	}
-
-	private void printReport(VeraPDFRunner.ResultStructure result) {
-		File report = result.getReportFile();
-		mergeLoggs(result.getLogFile());
-		this.multiThreadsTempFiles.add(result);
-		reportPrinter.printElement(report);
-		deleteTemp(this.multiThreadsTempFiles);
-	}
-
-	private void deleteTemp(List<VeraPDFRunner.ResultStructure> results) {
-		for (VeraPDFRunner.ResultStructure result : results) {
-			deleteFile(result.getReportFile());
-			deleteFile(result.getLogFile());
-		}
-	}
-
-	private void deleteFile(File file) {
-		if (!file.delete()) {
-			file.deleteOnExit();
-		}
-	}
-
-	private void mergeLoggs(File logFile) {
-		try {
-			Files.write(veraPDFErrorLog.toPath(), Files.readAllBytes(logFile.toPath()), APPEND);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't merge log files", e);
+	private void startProcesses(int numberOfProcesses) {
+		int processesQuantity = Math.min(numberOfProcesses, filesToProcess.size());
+		for (int i = 0; i < processesQuantity; i++) {
+			VeraPDFRunner veraPDFRunner = new VeraPDFRunner(reportWriter, veraPDFStarterPath, veraPDFParameters, filesToProcess);
+			new Thread(veraPDFRunner).start();
 		}
 	}
 }

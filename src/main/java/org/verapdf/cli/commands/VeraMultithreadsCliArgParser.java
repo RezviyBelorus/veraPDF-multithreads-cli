@@ -14,16 +14,11 @@ import java.util.List;
 import static java.lang.String.valueOf;
 
 public class VeraMultithreadsCliArgParser extends VeraCliArgParser {
-	private static final List<String> baseVeraPDFOptions = Arrays.asList("-x, -f, --format, -l, --maxfailures,");
 	final static String OPTION_SEP = "--"; //$NON-NLS-1$
 	final static String NUMBER_OF_PROCESSES_FLAG = OPTION_SEP + "processes"; //$NON-NLS-1$
 	final static String LOGGER_PATH_FLAG = OPTION_SEP + "logger"; //$NON-NLS-1$
 	final static String REDIRECT_OUTPUT_FLAG = OPTION_SEP + "stdout"; //$NON-NLS-1$
 	final static String BASE_VERA_PATH_FLAG = OPTION_SEP + "baseverapath";
-
-	private static final List<String> VERA_MULTI_THREADS_PARAMETERS =
-			Arrays.asList(NUMBER_OF_PROCESSES_FLAG, LOGGER_PATH_FLAG, REDIRECT_OUTPUT_FLAG, BASE_VERA_PATH_FLAG);
-
 
 	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The Number of processes which will be used, can't be " +
 			"less then 2, as one process is used by the main program and the others are used for the" +
@@ -59,10 +54,6 @@ public class VeraMultithreadsCliArgParser extends VeraCliArgParser {
 		return outputFile;
 	}
 
-	public void setNumberOfProcesses(int numberOfProcesses) {
-		this.numberOfProcesses = numberOfProcesses;
-	}
-
 	public static class NumberOfProcessesValidator implements IParameterValidator {
 		@Override
 		public void validate(String name, String value) throws ParameterException {
@@ -95,19 +86,19 @@ public class VeraMultithreadsCliArgParser extends VeraCliArgParser {
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add("--fixmetadata");
 		}
-		veraPDFParameters.add("-f");
+		veraPDFParameters.add("--flavour");
 		veraPDFParameters.add(valueOf(cliArgParser.getFlavour()));
 		veraPDFParameters.add("--format");
 		veraPDFParameters.add(valueOf(cliArgParser.getFormat()));
 		if (cliArgParser.listProfiles()) {
-			veraPDFParameters.add("-l");
+			veraPDFParameters.add("--list");
 		}
 		veraPDFParameters.add("--maxfailures");
 		veraPDFParameters.add(valueOf(cliArgParser.maxFailures()));
 		veraPDFParameters.add("--maxfailuresdisplayed");
 		veraPDFParameters.add(valueOf(cliArgParser.maxFailuresDisplayed()));
 		if (cliArgParser.isValidationOff()) {
-			veraPDFParameters.add("-o");
+			veraPDFParameters.add("--off");
 		}
 		File policyFile = cliArgParser.getPolicyFile();
 		if (policyFile != null) {
