@@ -62,7 +62,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.verapdf.cli.GreenfieldCliStarter</mainClass>
+                            <mainClass>org.verapdf.cli.VeraPdfMultiThreadsCli</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
