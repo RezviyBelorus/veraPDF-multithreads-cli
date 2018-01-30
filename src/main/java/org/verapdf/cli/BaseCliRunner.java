@@ -1,64 +1,66 @@
 package org.verapdf.cli;
 
-import org.verapdf.cli.utils.reports.ReportWriter;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class VeraPDFRunner implements Runnable{
-	private static final Logger LOGGER = Logger.getLogger(VeraPDFRunner.class.getCanonicalName());
-
-	Queue<File> filesToProcess;
-	private final String veraPDFStarterPath;
-	private List<String> veraPDFParameters;
+public class BaseCliRunner implements Runnable{
+	private static final Logger LOGGER = Logger.getLogger(BaseCliRunner.class.getCanonicalName());
 
 	private final String EXIT = "q";
 
+	private final String veraPDFStarterPath;
+
+	private final Queue<File> filesToProcess;
+	private final List<String> veraPDFParameters;
+
 	private Process process;
+
 	private OutputStream out;
 	private InputStream errorStream;
 
 	private Scanner reportScanner;
 	private Scanner errorScanner;
-	private ReportWriter reportHandler;
 
-	public VeraPDFRunner(ReportWriter reportHandler, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
+	private MultiThreadProcessor multiThreadProcessor;
+
+	public BaseCliRunner(MultiThreadProcessor multiThreadProcessor, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
+		this.multiThreadProcessor = multiThreadProcessor;
 		this.filesToProcess = filesToProcess;
-		this.reportHandler = reportHandler;
 		this.veraPDFStarterPath = veraPDFStarterPath;
 		this.veraPDFParameters = veraPDFParameters;
 	}
 
 	@Override
 	public void run() {
-		int listOfParametersSize = veraPDFParameters.size();
-		int filesQuantity = filesToProcess.size();
-		String[] command = new String[1 + listOfParametersSize + 1];
-		command[0] = veraPDFStarterPath;
-		for (int i = 0; i < listOfParametersSize; ++i) {
-			command[1 + i] = veraPDFParameters.get(i);
-		}
-		for (int i = 0; i < filesQuantity; ++i) {
+		List<String> command = new LinkedList<>();
 
-		}
-		command[1 + listOfParametersSize] = filesToProcess.poll().getAbsolutePath();
+		command.add(veraPDFStarterPath);
+		command.addAll(veraPDFParameters);
+		command.add(filesToProcess.poll().getAbsolutePath());
+
+		String[] finalCommand = command.toArray(new String[command.size()]);
+
 		try {
-			this.process = Runtime.getRuntime().exec(command);
+			this.process = Runtime.getRuntime().exec(finalCommand);
+
 			this.out = process.getOutputStream();
 			reportScanner = new Scanner(process.getInputStream());
+
 			this.errorStream = process.getErrorStream();
-			errorScanner = new Scanner(process.getErrorStream());
+			errorScanner = new Scanner(errorStream);
+
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Exception in process", e);
 		}
 		while (reportScanner.hasNextLine()) {
-			reportHandler.write(getData());
+			multiThreadProcessor.write(getData());
 
 			File file = filesToProcess.poll();
 
@@ -70,14 +72,17 @@ public class VeraPDFRunner implements Runnable{
 		}
 	}
 
-	public boolean closeProcess() {
+	private boolean closeProcess() {
 		boolean isClosed = false;
 		try {
 			this.out.write(EXIT.getBytes());
 			this.out.write("\n".getBytes());
 			this.out.flush();
+
 			process.waitFor();
+
 			isClosed = true;
+
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Can't close process", e);
 		} catch (InterruptedException e) {
@@ -86,7 +91,7 @@ public class VeraPDFRunner implements Runnable{
 		return isClosed;
 	}
 
-	public void validateFile(File file){
+	private void validateFile(File file){
 		try {
 			this.out.write(file.getAbsolutePath().getBytes());
 			this.out.write("\n".getBytes());
@@ -97,6 +102,7 @@ public class VeraPDFRunner implements Runnable{
 	}
 
 	private ResultStructure getData() {
+
 		String tempFilePath = reportScanner.nextLine();
 
 		File loggerFile = null;
@@ -104,7 +110,8 @@ public class VeraPDFRunner implements Runnable{
 			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
 			loggerFile = loggerPath.toFile();
 			try (BufferedWriter outToLogger = new BufferedWriter(new FileWriter(loggerFile))) {
-				while (this.errorStream.available() != 0) {
+				int empty = 0;
+				while (this.errorStream.available() != empty) {
 					outToLogger.write(errorScanner.nextLine());
 					outToLogger.newLine();
 					outToLogger.flush();

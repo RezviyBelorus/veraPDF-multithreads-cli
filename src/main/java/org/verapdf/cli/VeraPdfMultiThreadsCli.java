@@ -48,7 +48,7 @@ public class VeraPdfMultiThreadsCli {
 			try {
 				if (args.length == 0)
 					jCommander.usage();
-				VeraPDFProcessor.process(cliArgParser);
+				MultiThreadProcessor.process(cliArgParser);
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory"; //$NON-NLS-1$
 				LOGGER.log(Level.WARNING, message, oome);
@@ -94,7 +94,7 @@ public class VeraPdfMultiThreadsCli {
 	private static void displayAndExit(VeraMultithreadsCliArgParser cliArgParser, JCommander jCommander, int exitStatus) {
 		showVersionInfo(cliArgParser.isVerbose());
 		jCommander.usage();
-		System.exit(0);
+		System.exit(exitStatus);
 	}
 
 	private static void showVersionInfo(final boolean isVerbose) {
