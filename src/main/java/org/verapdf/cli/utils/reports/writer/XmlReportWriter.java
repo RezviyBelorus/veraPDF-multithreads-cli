@@ -1,17 +1,18 @@
-package org.verapdf.cli.utils.reports;
+package org.verapdf.cli.utils.reports.writer;
 
-import org.verapdf.cli.VeraPDFRunner;
+import org.verapdf.cli.BaseCliRunner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class XmlReportWriter extends ReportWriter {
+public class XmlReportWriter extends AbstractXmlReportWriter {
 	private static final Logger LOGGER = Logger.getLogger(XmlReportWriter.class.getCanonicalName());
 
 	private final String RAW_RESULTS_TAG = "rawResults";
@@ -21,43 +22,39 @@ public class XmlReportWriter extends ReportWriter {
 	private final String FEATURES_REPORT_TAG = "featuresReport";
 	private final String FIXER_RESULT_TAG = "fixerResult";
 
-	XmlReportWriter(OutputStream os, File veraPDFErrorLog, int filesQuantity) throws XMLStreamException, ParserConfigurationException, SAXException {
-		super(os, veraPDFErrorLog, filesQuantity);
+	protected XmlReportWriter(OutputStream os, File veraPDFErrorLog) throws XMLStreamException, ParserConfigurationException, SAXException {
+		super(os, veraPDFErrorLog);
 	}
 
 	@Override
-	public synchronized void write(VeraPDFRunner.ResultStructure result) {
-		try {
+	public synchronized void write(BaseCliRunner.ResultStructure result) {
+		try (FileOutputStream fos = new FileOutputStream(veraPdfErrorLog, true)){
 			File reportFile = result.getReportFile();
 			if (isFirstReport) {
-				writeStartDocument(RAW_RESULTS_TAG);
+				writer.writeStartElement(RAW_RESULTS_TAG);
 				printFirstReport(reportFile);
 				isFirstReport = false;
 			} else {
 				printReport(reportFile);
 			}
 
-			mergeLoggs(result.getLogFile());
+			merge(result.getLogFile(), fos);
 			deleteTemp(result);
 
-			filesQuantity--;
-			if (filesQuantity == 0) {
-				super.writeEndDocument();
-				closeOutputStream();
-			}
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Can't printTag element", e);
 		}
 	}
 
 	private void printReport(File reportFile) throws SAXException, IOException {
-		printTag(reportFile, ITEM_TAG, false);
-		printTag(reportFile, VALIDATION_RESULT_TAG, true);
-		printTag(reportFile, FEATURES_REPORT_TAG, false);
-		printTag(reportFile, FIXER_RESULT_TAG, false);
+		super.printTag(reportFile, ITEM_TAG, false);
+		super.printTag(reportFile, VALIDATION_RESULT_TAG, true);
+		super.printTag(reportFile, FEATURES_REPORT_TAG, false);
+		super.printTag(reportFile, FIXER_RESULT_TAG, false);
 	}
 
-	protected void printFirstReport(File report) throws SAXException, IOException, XMLStreamException {
+	@Override
+	public void printFirstReport(File report) throws SAXException, IOException, XMLStreamException {
 		printTag(report, PROCESSOR_CONFIG_TAG, false);
 		printReport(report);
 	}
