@@ -2,33 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53aaccd2-aca1-4fe8-8d7f-27da5e41bcee" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MultiThreadProcessingHandler.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MultiThreadProcessingHandlerImpl.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/AbstractXmlReportWriter.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportParserEventHandler.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportWriter.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/TextReportWriter.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/local.properties" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/VeraPDFProcessor.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/VeraPDFRunner.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/VeraPdfMultiThreadsCli.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/VeraPdfMultiThreadsCli.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/reportparser/ReportParser.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/ApplicationUtils.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/ApplicationUtils.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MrrReportWriter.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/MrrReportWriter.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/ReportWriter.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/TextReportWriter.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/XmlReportWriter.java" afterPath="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/XmlReportWriter.java" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/VeraPDFProcessor.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/VeraPDFRunner$ResultStructure.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/VeraPDFRunner.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/VeraPdfMultiThreadsCli.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/VeraPdfMultiThreadsCli.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/reportparser/ReportParser.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/ApplicationUtils.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/ApplicationUtils.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/MrrReportWriter.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/ReportWriter.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/TextReportWriter.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/XmlReportWriter.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/BaseCliRunner$ResultStructure.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/BaseCliRunner$ResultStructure.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/BaseCliRunner.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/BaseCliRunner.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/MultiThreadProcessor.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/MultiThreadProcessor.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter$1.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter$1.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter$OutputFormat.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter$OutputFormat.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/ReportWriter.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/TextReportWriter.class" afterPath="$PROJECT_DIR$/target/classes/org/verapdf/cli/utils/reports/writer/TextReportWriter.class" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-org.verapdf.cli.commands.VeraMultithreadsCliArgParserTest.xml" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-org.verapdf.cli.commands.VeraMultithreadsCliArgParserTest.xml" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/org.verapdf.cli.commands.VeraMultithreadsCliArgParserTest.txt" afterPath="$PROJECT_DIR$/target/surefire-reports/org.verapdf.cli.commands.VeraMultithreadsCliArgParserTest.txt" />
+      <change beforePath="$PROJECT_DIR$/target/verapdf-multithreads-cli-1.0-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/target/verapdf-multithreads-cli-1.0-SNAPSHOT.jar" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -44,35 +31,13 @@
       <FILTER>org.verapdf.cli.*</FILTER>
     </SUITE>
   </component>
-  <component name="DockManager">
-    <window id="2">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="MrrReportWriter.java" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/MrrReportWriter.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="315">
-                    <caret line="21" column="25" lean-forward="true" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
-                    <folding>
-                      <element signature="imports" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MultiThreadProcessor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java">
+      <file leaf-file-name="ReportParserEventHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportParserEventHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="105" lean-forward="false" selection-start-line="16" selection-start-column="105" selection-end-line="16" selection-end-column="105" />
+            <state relative-caret-position="525">
+              <caret line="45" column="32" lean-forward="false" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -80,11 +45,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BaseCliRunner.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="VeraMultithreadsCliArgParser.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/commands/VeraMultithreadsCliArgParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1545">
+              <caret line="124" column="5" lean-forward="false" selection-start-line="124" selection-start-column="5" selection-end-line="124" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MultiThreadProcessor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1860">
+              <caret line="124" column="0" lean-forward="false" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseCliRunner.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1085">
-              <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+            <state relative-caret-position="193">
+              <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -95,7 +82,7 @@
       <file leaf-file-name="MultiThreadProcessingHandlerImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MultiThreadProcessingHandlerImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
+            <state relative-caret-position="240">
               <caret line="23" column="10" lean-forward="false" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -120,20 +107,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VeraPdfMultiThreadsCli.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/VeraPdfMultiThreadsCli.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="32">
-              <caret line="96" column="30" lean-forward="false" selection-start-line="96" selection-start-column="30" selection-end-line="96" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractXmlReportWriter.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AbstractXmlReportWriter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/AbstractXmlReportWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="122">
+            <state relative-caret-position="360">
               <caret line="37" column="111" lean-forward="false" selection-start-line="37" selection-start-column="111" selection-end-line="37" selection-end-column="111" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -145,25 +122,11 @@
       <file leaf-file-name="ReportWriter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-884">
+            <state relative-caret-position="30">
               <caret line="2" column="37" lean-forward="false" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
               <folding>
                 <element signature="e#2194#2195#0" expanded="true" />
                 <element signature="e#2235#2236#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ApplicationUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/ApplicationUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#199#200#0" expanded="true" />
-                <element signature="e#255#256#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -185,7 +148,7 @@
       <file leaf-file-name="XmlReportWriter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/XmlReportWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
+            <state relative-caret-position="480">
               <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
               <folding />
             </state>
@@ -298,10 +261,10 @@
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/XmlReportWriter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/MrrReportWriter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MultiThreadProcessingHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/TextReportWriter.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportWriter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java" />
       </list>
     </option>
   </component>
@@ -334,9 +297,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1440" />
+    <option name="x" value="25" />
+    <option name="y" value="23" />
     <option name="width" value="1388" />
-    <option name="height" value="1200" />
+    <option name="height" value="821" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -354,8 +318,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
       <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
@@ -398,15 +362,6 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="cli" type="462c0819:PsiDirectoryNode" />
-              <item name="commands" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="veraPDF-multithreads-cli" type="b2602c69:ProjectViewProjectNode" />
-              <item name="veraPDF-multithreads-cli" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="cli" type="462c0819:PsiDirectoryNode" />
               <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -424,11 +379,7 @@
               <item name="veraPDF-multithreads-cli" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="cli" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-              <item name="reports" type="462c0819:PsiDirectoryNode" />
-              <item name="writer" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="veraPDF-multithreads-cli" type="b2602c69:ProjectViewProjectNode" />
@@ -581,7 +532,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="org.verapdf.cli.VeraPdfMultiThreadsCli" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="&quot;$USER_HOME$/Desktop/VeraPDF-test files/test/inside&quot; --baseverapath &quot;$USER_HOME$/Desktop/VeraPDF/verapdf&quot; --processes 6 --format mrr" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;$USER_HOME$/Downloads/089836.pdf&quot; --baseverapath &quot;$USER_HOME$/Desktop/VeraPDF/verapdf&quot; --processes 6 --format mrr" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -816,36 +767,35 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="0" width="1388" height="1200" extended-state="0" />
-    <editor active="true" />
+    <frame x="25" y="23" width="1388" height="821" extended-state="0" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32760182" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32669684" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5021299" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21085595" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3429752" sideWeight="0.4978701" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34298643" sideWeight="0.4978701" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.4978701" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2630854" sideWeight="0.4978701" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31723624" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33506685" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40082645" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26153848" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32669684" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32970184" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -902,8 +852,26 @@
           <properties />
           <option name="timeStamp" value="254" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java</url>
+          <line>71</line>
+          <properties />
+          <option name="timeStamp" value="255" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java</url>
+          <line>47</line>
+          <properties />
+          <option name="timeStamp" value="256" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java</url>
+          <line>105</line>
+          <properties />
+          <option name="timeStamp" value="257" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="255" />
+      <option name="time" value="258" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -931,6 +899,11 @@
       </expression>
     </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>reportScanner.nextLine()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>scanner.nextLine()</expression-string>
         <language-id>JAVA</language-id>
@@ -968,11 +941,6 @@
       </expression>
       <expression>
         <expression-string>this.scanner.nextLine()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>process.getData()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1090,7 +1058,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1259">
           <caret line="222" column="14" lean-forward="false" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1130,7 +1097,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="645">
           <caret line="82" column="13" lean-forward="false" selection-start-line="82" selection-start-column="13" selection-end-line="82" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1138,7 +1104,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1146,44 +1111,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="37" lean-forward="false" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/OutputFormat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="1" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="21" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/commands/VeraMultithreadsCliArgParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="891">
-          <caret line="124" column="5" lean-forward="true" selection-start-line="124" selection-start-column="5" selection-end-line="124" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportParserEventHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="32" lean-forward="false" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/OutputFormat.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/ApplicationUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
           <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#199#200#0" expanded="true" />
-            <element signature="e#255#256#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#199#200#0" expanded="false" />
+            <element signature="e#255#256#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1196,29 +1135,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1085">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="105" lean-forward="false" selection-start-line="16" selection-start-column="105" selection-end-line="16" selection-end-column="105" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/MultiThreadProcessingHandlerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
+        <state relative-caret-position="240">
           <caret line="23" column="10" lean-forward="false" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1242,7 +1161,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/XmlReportWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
+        <state relative-caret-position="480">
           <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
           <folding />
         </state>
@@ -1261,7 +1180,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-884">
+        <state relative-caret-position="30">
           <caret line="2" column="37" lean-forward="false" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
           <folding>
             <element signature="e#2194#2195#0" expanded="true" />
@@ -1272,7 +1191,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/AbstractXmlReportWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
+        <state relative-caret-position="360">
           <caret line="37" column="111" lean-forward="false" selection-start-line="37" selection-start-column="111" selection-end-line="37" selection-end-column="111" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1280,10 +1199,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/ReportParserEventHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="45" column="32" lean-forward="false" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/commands/VeraMultithreadsCliArgParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1545">
+          <caret line="124" column="5" lean-forward="false" selection-start-line="124" selection-start-column="5" selection-end-line="124" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/utils/reports/writer/MrrReportWriter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="21" column="25" lean-forward="true" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
+          <caret line="21" column="25" lean-forward="false" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/MultiThreadProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1860">
+          <caret line="124" column="0" lean-forward="false" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/verapdf/cli/BaseCliRunner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
