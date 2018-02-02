@@ -41,7 +41,8 @@ public abstract class AbstractXmlReportWriter extends ReportWriter {
 	public void startDocument() {
 		try {
 			this.isFirstReport = true;
-			this.writer.writeStartDocument(ApplicationUtils.getProperty(ENCODING), ApplicationUtils.getProperty(XML_VERSION));
+//			this.writer.writeStartDocument(ApplicationUtils.getProperty(ENCODING), ApplicationUtils.getProperty(XML_VERSION));
+            this.writer.writeStartDocument();
 		} catch (XMLStreamException e) {
 			LOGGER.log(Level.SEVERE, "Can't write start document", e);
 		}

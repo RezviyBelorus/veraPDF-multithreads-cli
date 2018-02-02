@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/utils/reports/writer/MrrReportWriter.java
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/commands/VeraMultithreadsCliArgParser.java
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/VeraPdfMultiThreadsCli.java
@@ -11,3 +12,18 @@
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/BaseCliRunner.java
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/utils/reports/writer/XmlReportWriter.java
 /Users/alexfomin/IdeaProjects/VeraPDF/veraPDF-multithreads-cli/src/main/java/org/verapdf/cli/utils/reports/writer/ReportWriter.java
+=======
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\VeraPdfMultiThreadsCli.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\ReportParserEventHandler.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\TextReportWriter.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\MultiThreadProcessingHandler.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\AbstractXmlReportWriter.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\MultiThreadProcessingHandlerImpl.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\MrrReportWriter.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\BaseCliRunner.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\ApplicationUtils.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\XmlReportWriter.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\commands\VeraMultithreadsCliArgParser.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\MultiThreadProcessor.java
+C:\Users\duallab\Desktop\IntellijIdea projects\veraPDF-multithreads-cli\src\main\java\org\verapdf\cli\utils\reports\writer\ReportWriter.java
+>>>>>>> newconsoleout

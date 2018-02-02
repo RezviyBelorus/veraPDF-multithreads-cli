@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 org/verapdf/cli/utils/reports/writer/MrrReportWriter.class
 org/verapdf/cli/utils/reports/writer/ReportWriter$OutputFormat.class
 org/verapdf/cli/commands/VeraMultithreadsCliArgParser$BaseVeraPathValidator.class
@@ -16,3 +17,23 @@ org/verapdf/cli/utils/reports/writer/ReportWriter.class
 org/verapdf/cli/VeraPdfMultiThreadsCli.class
 org/verapdf/cli/utils/reports/writer/XmlReportWriter.class
 org/verapdf/cli/utils/reports/writer/AbstractXmlReportWriter.class
+=======
+org\verapdf\cli\BaseCliRunner$ResultStructure.class
+org\verapdf\cli\BaseCliRunner.class
+org\verapdf\cli\utils\reports\writer\ReportWriter.class
+org\verapdf\cli\VeraPdfMultiThreadsCli.class
+org\verapdf\cli\utils\reports\writer\ReportParserEventHandler.class
+org\verapdf\cli\utils\reports\writer\XmlReportWriter.class
+org\verapdf\cli\commands\VeraMultithreadsCliArgParser.class
+org\verapdf\cli\utils\reports\MultiThreadProcessingHandlerImpl.class
+org\verapdf\cli\utils\reports\writer\AbstractXmlReportWriter.class
+org\verapdf\cli\utils\reports\writer\ReportWriter$1.class
+org\verapdf\cli\utils\reports\writer\TextReportWriter.class
+org\verapdf\cli\commands\VeraMultithreadsCliArgParser$BaseVeraPathValidator.class
+org\verapdf\cli\commands\VeraMultithreadsCliArgParser$NumberOfProcessesValidator.class
+org\verapdf\cli\utils\reports\writer\MrrReportWriter.class
+org\verapdf\cli\utils\reports\writer\ReportWriter$OutputFormat.class
+org\verapdf\cli\MultiThreadProcessor.class
+org\verapdf\cli\utils\ApplicationUtils.class
+org\verapdf\cli\utils\reports\MultiThreadProcessingHandler.class
+>>>>>>> newconsoleout

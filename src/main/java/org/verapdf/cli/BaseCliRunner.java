@@ -10,134 +10,126 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BaseCliRunner implements Runnable{
-	private static final Logger LOGGER = Logger.getLogger(BaseCliRunner.class.getCanonicalName());
+import static java.util.stream.Collectors.toList;
 
-	private final String EXIT = "q";
+public class BaseCliRunner implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger(BaseCliRunner.class.getCanonicalName());
 
-	private final String veraPDFStarterPath;
+    private final String EXIT = "q";
 
-	private final Queue<File> filesToProcess;
-	private final List<String> veraPDFParameters;
+    private final String veraPDFStarterPath;
 
-	private Process process;
+    private final Queue<File> filesToProcess;
+    private final List<String> veraPDFParameters;
 
-	private OutputStream out;
-	private InputStream errorStream;
+    private Process process;
 
-	private Scanner reportScanner;
-	private Scanner errorScanner;
+    private OutputStream out;
 
-	private MultiThreadProcessor multiThreadProcessor;
+    private Scanner reportScanner;
 
-	public BaseCliRunner(MultiThreadProcessor multiThreadProcessor, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
-		this.multiThreadProcessor = multiThreadProcessor;
-		this.filesToProcess = filesToProcess;
-		this.veraPDFStarterPath = veraPDFStarterPath;
-		this.veraPDFParameters = veraPDFParameters;
-	}
+    private MultiThreadProcessor multiThreadProcessor;
 
-	@Override
-	public void run() {
-		List<String> command = new LinkedList<>();
+    private File loggerFile;
 
-		command.add(veraPDFStarterPath);
-		command.addAll(veraPDFParameters);
-		command.add(filesToProcess.poll().getAbsolutePath());
+    public BaseCliRunner(MultiThreadProcessor multiThreadProcessor, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
+        this.multiThreadProcessor = multiThreadProcessor;
+        this.filesToProcess = filesToProcess;
+        this.veraPDFStarterPath = veraPDFStarterPath;
+        this.veraPDFParameters = veraPDFParameters;
+    }
 
-		String[] finalCommand = command.toArray(new String[command.size()]);
+    @Override
+    public void run() {
+        List<String> command = new LinkedList<>();
 
-		try {
-			this.process = Runtime.getRuntime().exec(finalCommand);
+        command.add(veraPDFStarterPath);
+        command.addAll(veraPDFParameters);
+        command.add(filesToProcess.poll().getAbsolutePath());
 
-			this.out = process.getOutputStream();
-			reportScanner = new Scanner(process.getInputStream());
+        command = command.stream().map(parameter -> {
+            if (parameter.isEmpty()) {
+                return "\"\"";
+            }
+            return parameter;
+        }).collect(toList());
 
-			this.errorStream = process.getErrorStream();
-			errorScanner = new Scanner(errorStream);
+        try {
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.command(command);
+            Path loggerPath = Files.createTempFile("LOGGER", ".txt");
+            this.loggerFile = loggerPath.toFile();
+            pb.redirectError(loggerFile);
 
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Exception in process", e);
-		}
-		while (reportScanner.hasNextLine()) {
-			multiThreadProcessor.write(getData());
+            this.process = pb.start();
 
-			File file = filesToProcess.poll();
+            this.out = process.getOutputStream();
+            reportScanner = new Scanner(process.getInputStream());
 
-			if (file != null) {
-				validateFile(file);
-			} else {
-				closeProcess();
-			}
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception in process", e);
+        }
+        while (reportScanner.hasNextLine()) {
+            multiThreadProcessor.write(getData());
 
-	private boolean closeProcess() {
-		boolean isClosed = false;
-		try {
-			this.out.write(EXIT.getBytes());
-			this.out.write("\n".getBytes());
-			this.out.flush();
+            File file = filesToProcess.poll();
 
-			process.waitFor();
+            if (file != null) {
+                validateFile(file);
+            } else {
+                closeProcess();
+            }
+        }
+    }
 
-			isClosed = true;
+    private boolean closeProcess() {
+        boolean isClosed = false;
+        try {
+            this.out.write(EXIT.getBytes());
+            this.out.write("\n".getBytes());
+            this.out.flush();
 
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't close process", e);
-		} catch (InterruptedException e) {
-			LOGGER.log(Level.SEVERE, "Process interrupted exception", e);
-		}
-		return isClosed;
-	}
+            process.waitFor();
 
-	private void validateFile(File file){
-		try {
-			this.out.write(file.getAbsolutePath().getBytes());
-			this.out.write("\n".getBytes());
-			this.out.flush();
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't pass new file pro validate", e);
-		}
-	}
+            isClosed = true;
 
-	private ResultStructure getData() {
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Can't close process", e);
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "Process interrupted exception", e);
+        }
+        return isClosed;
+    }
 
-		String tempFilePath = reportScanner.nextLine();
+    private void validateFile(File file) {
+        try {
+            this.out.write(file.getAbsolutePath().getBytes());
+            this.out.write("\n".getBytes());
+            this.out.flush();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Can't pass new file pro validate", e);
+        }
+    }
 
-		File loggerFile = null;
-		try {
-			Path loggerPath = Files.createTempFile("LOGGER", ".txt");
-			loggerFile = loggerPath.toFile();
-			try (BufferedWriter outToLogger = new BufferedWriter(new FileWriter(loggerFile))) {
-				int empty = 0;
-				while (this.errorStream.available() != empty) {
-					outToLogger.write(errorScanner.nextLine());
-					outToLogger.newLine();
-					outToLogger.flush();
-				}
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Can't create temporary log file", e);
-		}
-		return new ResultStructure(new File(tempFilePath), loggerFile);
-	}
+    private ResultStructure getData() {
+        return new ResultStructure(new File(reportScanner.nextLine()), loggerFile);
+    }
 
-	public static class ResultStructure {
-		private File reportFile;
-		private File logFile;
+    public static class ResultStructure {
+        private File reportFile;
+        private File logFile;
 
-		public ResultStructure(File reportFile, File logFile) {
-			this.reportFile = reportFile;
-			this.logFile = logFile;
-		}
+        public ResultStructure(File reportFile, File logFile) {
+            this.reportFile = reportFile;
+            this.logFile = logFile;
+        }
 
-		public File getReportFile() {
-			return reportFile;
-		}
+        public File getReportFile() {
+            return reportFile;
+        }
 
-		public File getLogFile() {
-			return logFile;
-		}
-	}
+        public File getLogFile() {
+            return logFile;
+        }
+    }
 }
